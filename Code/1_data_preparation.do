@@ -772,18 +772,256 @@ drop indicatorcode
 
 reshape wide commprice, i(id year) j(indicator)
 order country id year 
-label variable commprice1 "Commodity Net Export Price, Trade-Weighted"
-label variable commprice2 "Commodity Net Export Price, GDP-Weighted"
+label variable commprice1 "Commodity Terms-of-Trade Index, Trade-Weighted"
+label variable commprice2 "Commodity Terms-of-Trade Index, GDP-Weighted"
 drop country
 
 save "$datapath/IMF_Commprices.dta", replace
 
+********************************************************************************
+******************* IMF FINANCIAL STATISTICS **********************************
+********************************************************************************
+
+/*
+
+ORIGINAL DATA FILE FROM IMF TOO LARGE TO INCLUDE ON GITHUB (25 MB MAX.) THIS SECTION WAS THEREFORE MUTED. THE COMPLETE DATAFILE IS AVAILABLE FROM US IN THE GITHUB DATA FOLDER.
+
+import delimited "$datapath/IFS_03-17-2023 10-06-40-48_timeSeries.csv", clear 
+
+rename ïcountryname country
+
+generate id=.
+order country id
+replace id=8 if country=="Argentina"
+replace id=20 if country=="Belize"
+replace id=24 if country=="Bolivia"
+replace id=27 if country=="Brazil"
+replace id=40 if country=="Chile"
+replace id=42 if country=="Colombia"
+replace id=46 if country=="Costa Rica"
+replace id=56 if country=="Dominican Rep."
+replace id=57 if country=="Ecuador"
+replace id=59 if country=="El Salvador"
+replace id=78 if country=="Guatemala"
+replace id=82 if country=="Haiti"
+replace id=83 if country=="Honduras"
+replace id=95 if country=="Jamaica"
+replace id=126 if country=="Mexico"
+replace id=140 if country=="Nicaragua"
+replace id=148 if country=="Panama"
+replace id=150 if country=="Paraguay"
+replace id=151 if country=="Peru"
+replace id=195 if country=="Trinidad and Tobago"
+replace id=206 if country=="Uruguay"
+replace id=209 if country=="Venezuela, Rep. Bolivariana de"
+
+drop if id==.
+sort indicatorname
+
+keep if indicatorname=="Financial, Interest Rates, Average Cost of Funds, Percent per Annum" | ///
+ indicatorname=="Financial, Interest Rates, Government Securities, Government Bonds, Percent per annum" ///
+| indicatorname=="Financial, Interest Rates, Government Securities, Treasury Bills, Percent per annum" ///
+| indicatorname=="Financial, Interest Rates, Lending Rate, Foreign Currency, Percent per Annum"  ///
+| indicatorname=="Financial, Interest Rates, Lending Rate, Percent per annum" ///
+| indicatorname=="Financial, Interest Rates, Money Market, Foreign Currency, Percent per Annum" ///
+| indicatorname=="Financial, Interest Rates, Money Market, Percent per annum"
+
+drop countrycode indicatorcode v41 baseyear v38 v39
+
+rename v6 v1990
+rename v7 v1991
+rename v8 v1992
+rename v9 v1993
+rename v10 v1994
+rename v11 v1995
+rename v12 v1996
+rename v13 v1997
+rename v14 v1998
+rename v15 v1999
+rename v16 v2000
+rename v17 v2001
+rename v18 v2002
+rename v19 v2003
+rename v20 v2004
+rename v21 v2005
+rename v22 v2006
+rename v23 v2007
+rename v24 v2008
+rename v25 v2009
+rename v26 v2010
+rename v27 v2011
+rename v28 v2012
+rename v29 v2013
+rename v30 v2014
+rename v31 v2015
+rename v32 v2016
+rename v33 v2017
+rename v34 v2018
+rename v35 v2019
+rename v36 v2020
+rename v37 v2021
+
+drop if attribute=="Status"
+drop attribute
+destring v*, replace
+
+reshape long v, i(country indicatorname) j(year)
+rename v interestrate
+
+order country id year indicatorname interestrate
+
+gen typeofrate=.
+replace typeofrate=1 if indicatorname=="Financial, Interest Rates, Average Cost of Funds, Percent per Annum"
+replace typeofrate=2 if indicatorname=="Financial, Interest Rates, Government Securities, Government Bonds, Percent per annum"
+replace typeofrate=3 if indicatorname=="Financial, Interest Rates, Government Securities, Treasury Bills, Percent per annum"
+replace typeofrate=4 if indicatorname=="Financial, Interest Rates, Lending Rate, Foreign Currency, Percent per Annum"
+replace typeofrate=5 if indicatorname=="Financial, Interest Rates, Lending Rate, Percent per annum"
+replace typeofrate=6 if indicatorname=="Financial, Interest Rates, Money Market, Foreign Currency, Percent per Annum"
+replace typeofrate=7 if indicatorname=="Financial, Interest Rates, Money Market, Percent per annum"
+drop indicatorname
+
+reshape wide interestrate, i(id year) j(typeofrate)
+
+order country id year 
+
+label variable  interestrate1 "Interest Rates - Average Cost of Funds, percent per annum"
+label variable  interestrate2 "Interest Rates - Gov Bonds, percent per annum"
+label variable  interestrate3 "Interest Rates - Treasury Bills, percent per annum"
+label variable  interestrate4 "Interest Rates - Lendng Rate Foreign Currency, percent per annum"
+label variable  interestrate5 "Interest Rates - Lending Rate, percent per annum"
+label variable  interestrate6 "Interest Rates - Money Market Foreign Currency, percent per annum"
+label variable  interestrate7 "Interest Rates - Money Market, percent per annum"
+
+sort country year
+
+save "$datapath/IMF_interest_rates.dta", replace
+*/
+
+********************************************************************************
+******************* IMF FISCAL DECENTRALIZATION **********************************
+********************************************************************************
+
+import delimited "$datapath/FISCALDECENTRALIZATION_11-13-2022 06-45-12-25_timeSeries.csv", clear 
+
+rename ïcountryname country
+
+generate id=.
+order country id
+replace id=8 if country=="Argentina"
+replace id=20 if country=="Belize"
+replace id=24 if country=="Bolivia"
+replace id=27 if country=="Brazil"
+replace id=40 if country=="Chile"
+replace id=42 if country=="Colombia"
+replace id=46 if country=="Costa Rica"
+replace id=56 if country=="Dominican Rep."
+replace id=57 if country=="Ecuador"
+replace id=59 if country=="El Salvador"
+replace id=78 if country=="Guatemala"
+replace id=82 if country=="Haiti"
+replace id=83 if country=="Honduras"
+replace id=95 if country=="Jamaica"
+replace id=126 if country=="Mexico"
+replace id=140 if country=="Nicaragua"
+replace id=148 if country=="Panama"
+replace id=150 if country=="Paraguay"
+replace id=151 if country=="Peru"
+replace id=195 if country=="Trinidad and Tobago"
+replace id=206 if country=="Uruguay"
+replace id=209 if country=="Venezuela, RepÃºblica Bolivariana de"
+
+drop if id==.
+
+keep if indicatorname=="Education, share of general government" | indicatorname=="Expenditure decentralization (ratio of own spending to general government spending)" ///
+| indicatorname=="General public services, share of general government" | indicatorname=="Health, share of general government" ///
+| indicatorname=="Housing & community ammenities, share of general government" | indicatorname=="Revenue decentralization (ratio of own revenues to general government revenues)" ///
+| indicatorname=="Social benefits, share of general government" | indicatorname=="Social contributions, share of general government" ///
+| indicatorname=="Social protection, share of general government" | indicatorname=="Tax revenue decentralization (share of general government)"
+
+drop countrycode indicatorcode sectorcode attribute v57
+
+rename v8 v1972
+rename v9 v1973
+rename v10 v1974
+rename v11 v1975
+rename v12 v1976
+rename v13 v1977
+rename v14 v1978
+rename v15 v1979
+rename v16 v1980
+rename v17 v1981
+rename v18 v1982
+rename v19 v1983
+rename v20 v1984
+rename v21 v1985
+rename v22 v1986
+rename v23 v1987
+rename v24 v1988
+rename v25 v1989
+rename v26 v1990
+rename v27 v1991
+rename v28 v1992
+rename v29 v1993
+rename v30 v1994
+rename v31 v1995
+rename v32 v1996
+rename v33 v1997
+rename v34 v1998
+rename v35 v1999
+rename v36 v2000
+rename v37 v2001
+rename v38 v2002
+rename v39 v2003
+rename v40 v2004
+rename v41 v2005
+rename v42 v2006
+rename v43 v2007
+rename v44 v2008
+rename v45 v2009
+rename v46 v2010
+rename v47 v2011
+rename v48 v2012
+rename v49 v2013
+rename v50 v2014
+rename v51 v2015
+rename v52 v2016
+rename v53 v2017
+rename v54 v2018
+rename v55 v2019
+rename v56 v2020
+
+reshape long v, i(country indicatorname sectorname) j(year)
+rename v share
+
+order country id year indicatorname sectorname share
+
+drop if share==.
+
+gen govlevel=.
+replace govlevel=1 if sectorname=="Central Government"
+replace govlevel=2 if sectorname=="Local Government"
+replace govlevel=3 if sectorname=="State Government"
+replace govlevel=4 if sectorname=="Subnational Government"
+drop sectorname
+
+reshape wide share, i(id year indicatorname) j(govlevel)
+
+order country id year 
+
+rename share1 share_centralgov
+rename share2 share_localgov
+rename share3 share_stategov
+rename share4 share_subnationalgov
+
+sort indicatorname country year
+
+save "$datapath/IMF_decentralization.dta", replace
 
 ********************************************************************************
 ************************ CEPAL OLD DATA ****************************************
 ********************************************************************************
 
-import excel "$datapath/CEPAL Gasto public 1990-2015.xlsx", sheet("Nivel") clear
+import excel "$datapath/CEPAL Gasto public 1990-2015 in dollar incl sub posiciones original file.xlsx", sheet("Nivel") clear
 
 drop B D F H J L N P R T V X Z AB AD AF AH AJ AL AN AP AR AT AV AX AZ BB
 
@@ -843,19 +1081,19 @@ drop spending1 spending2 spending3 spending4 spending5 spending6 spending7
 drop spendingtype
 reshape wide t, i(id year) j(spendingt)
 
-rename t1 percapita_CGold_TOTAL
-rename t2 percapita_CGold_RECREATION
-rename t3 percapita_CGold_EDUCATION
-rename t4 percapita_CGold_ENVIRONMENT
-rename t5 percapita_CGold_SOCIALPROT
-rename t6 percapita_CGold_HEALTH
-rename t7 percapita_CGold_HOUSING
+gen percapita_CGold_TOTAL=real(t1)
+gen percapita_CGold_RECREATION=real(t2)
+gen percapita_CGold_EDUCATION=real(t3)
+gen percapita_CGold_ENVIRONMENT=real(t4)
+gen percapita_CGold_SOCIALPROT=real(t5)
+gen percapita_CGold_HEALTH=real(t6)
+gen percapita_CGold_HOUSING=real(t7)
 
 save "$datapath/CEPAL_spendingperc_CG_old.dta", replace
 
 *****
 
-import excel "$datapath/CEPAL_percentage_1990_2015", clear
+import excel "$datapath/CEPAL Gasto publico as % of GDP 1990-2015 sorted by different levels of government", clear
 
 drop B D F H J L N P R T V X Z AB AD AF AH AJ AL AN AP AR AT AV AX AZ BB
 
@@ -915,15 +1153,24 @@ drop spending1 spending2 spending3 spending4 spending5 spending6 spending7
 drop spendingtype
 reshape wide t, i(id year) j(spendingt)
 
-rename t1 percent_CGold_TOTAL
-rename t2 percent_CGold_RECREATION
-rename t3 percent_CGold_EDUCATION
-rename t4 percent_CGold_ENVIRONMENT
-rename t5 percentpercent_CGold_SOCIALPROT
-rename t6 percent_CGold_HEALTH
-rename t7 percent_CGold_HOUSING
+gen percent_CGold_TOTAL=real(t1)
+gen percent_CGold_RECREATION=real(t2)
+gen percent_CGold_EDUCATION=real(t3)
+gen percent_CGold_ENVIRONMENT=real(t4)
+gen percent_CGold_SOCIALPROT=real(t5)
+gen percent_CGold_HEALTH=real(t6)
+gen percent_CGold_HOUSING=real(t7)
 
 save "$datapath/CEPAL_spendingpercent_CG_old.dta", replace
+
+*****
+
+import excel "$datapath/Controldummies.xlsx", sheet("Tabelle1") firstrow clear
+
+label variable lwg "Left-wing government (1=yes)"
+label variable expr "Expenditure rule in place (1=yes)"
+label variable bbr "Balanced-budget rule in place (1=yes)"
+save "$datapath/controldummies.dta", replace
 
 ********************************************************************************
 ************************ MERGE DATASETS ****************************************
@@ -964,16 +1211,18 @@ merge 1:1 id year using "$datapath/IMF_Commprices.dta"
 drop if _merge==2
 drop _merge
 
-drop if id==20 | id==49 | id==82  | id==195
-drop if year<1990
-
 merge 1:1 id year using "$datapath/GDPpc.dta"
 drop if _merge==2
 drop _merge
 
-"$datapath/fed_baaffm_geo"
+/*
+merge 1:1 id year using "$datapath/IMF_interest_rates.dta"
+drop if _merge==2
 drop _merge
-sort id year
+*/
+
+merge 1:1 id year using "$datapath/controldummies.dta"
+drop _merge
 
 drop if country==""
 

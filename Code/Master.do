@@ -1,8 +1,11 @@
 
-/* This is the master do file for the paper 
-"The Role of the Commodity Price Boom in Shaping Public Social Spending: Evidence from Latin America" 
+/* This is the master do file for the replication package of the paper 
 
-Please insert your macros paths.
+"The Role of the Commodity Price Boom in Shaping Public Social Spending: Evidence from Latin America" 
+published in World Development (2024), 182: 106717
+by Svenja Flechtner and Martin Middelanis
+
+https://www.sciencedirect.com/science/article/pii/S0305750X24001876 
 */
 
 clear all
@@ -15,25 +18,29 @@ set more off
 set logtype text
 set linesize 255 
 
-*** Macros for paths
-global datapath "INSERT/Data and analysis/Data" /*insert your path*/
-global outputpath "INSERT/Data and analysis/Results" /*insert your path*/
-global syntaxpath "INSERT/Data and analysis/Code" /*insert your path*/
+*** Ado path
+*sysdir set PERSONAL "H:\"
+*mata mata mlib index
 
-*** Macros for file names and output paths
+*** Macros for paths 
+global datapath "INSERT" /* Please insert your macros paths corresponding to the folder structure you created (see readme file). */
+global outputpath "INSERT" /* Please insert your macros paths corresponding to the folder structure you created (see readme file). */
+global syntaxpath "INSERT" /* Please insert your macros paths corresponding to the folder structure you created (see readme file). */
+
+*** Macros for file names
 global dateiname "Social_spending.dta" 
-global outputname "NAME" /*insert your desired output name*/
+global outputname "Protocole"  
 
 set matsize 10000
 cap log close
 
 ********************************************************************************************************************
-*** Aufzeichung in Protokoll starten.
+*** Start log file.
 log using "$outputpfad\$outputname.log", replace
 
 ********************************************************************************************************************
 ********************************************************************************************************************
-*** I. DATA CLEANING AND DESCRIPTION
+*** I. DATA CLEANING
 ********************************************************************************************************************
 ********************************************************************************************************************
 
@@ -42,19 +49,44 @@ do "$syntaxpath/2_spending_graphs.do"
 
 ********************************************************************************************************************
 ********************************************************************************************************************
-*** II. VAR ESTIMATIONS
+*** II. MAIN RESULTS
 ********************************************************************************************************************
 ********************************************************************************************************************
 
-cap do "$syntaxpath/3_var_level_percapita.do"
-cap do "$syntaxpath/4_var_level_percent.do"
-cap do "$syntaxpath/5_var_countrygraphs_paper.do"
+do "$syntaxpath/var_level_percapita.do"
+do "$syntaxpath/var_level_percent.do"
+do "$syntaxpath/var_countrygraphs_paper.do"
+
 
 ********************************************************************************************************************
 ********************************************************************************************************************
-*** II. LP ESTIMATIONS
+*** III. ROBUSTNESS CHECKS
 ********************************************************************************************************************
 ********************************************************************************************************************
 
-cap do "$syntaxpath/6_local_projections.do"
+********************************************************************************************************************
+*** III.1 BIVARIATE VARS
+********************************************************************************************************************
+do "$syntaxpath/7_bivariate_var.do"
+
+********************************************************************************************************************
+*** III.2 LOCAL PROJECTIONS
+********************************************************************************************************************
+do "$syntaxpath/6_local_projections.do"
+
+********************************************************************************************************************
+*** III.3 GDP AS CONTROL VARIABLE
+********************************************************************************************************************
+do "$syntaxpath/8_var_GDP.do"
+
+********************************************************************************************************************
+*** III.4 INTEREST RATE AS CONTROL VARIABLE
+********************************************************************************************************************
+do "$syntaxpath/9_var_interestrate.do"
+
+********************************************************************************************************************
+*** III.5 LEFT WING GOVERNMENT DUMMY
+********************************************************************************************************************
+do "$syntaxpath/10_var_lwg.do"
+
 
